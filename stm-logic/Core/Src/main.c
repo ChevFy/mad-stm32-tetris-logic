@@ -114,8 +114,7 @@ int	main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		protocols_send_gameover();
-		HAL_Delay(500);
+		test_protocols();
 	}
 	/* USER CODE END 3 */
 }
@@ -216,6 +215,7 @@ void	Error_Handler(void)
 	__disable_irq();
 	while (1)
 	{
+		test_protocols();
 	}
 	/* USER CODE END Error_Handler_Debug */
 }

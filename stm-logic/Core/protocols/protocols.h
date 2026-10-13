@@ -1,48 +1,52 @@
 #ifndef __PROTOCOLS_H__
-#define __PROTOCOLS_H__
+# define __PROTOCOLS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+# ifdef __cplusplus
+extern "C"
+{
+# endif
 
-#include "main.h"
+# include "main.h"
 
-#define PROTO_SYNC        0xAAu
-#define PROTO_MAX_PAYLOAD 112u
+# define PROTO_SYNC 0xAAu
+# define PROTO_MAX_PAYLOAD 112u
 
-#define PROTO_TYPE_JOIN      0x01u
-#define PROTO_TYPE_STATE     0x02u
-#define PROTO_TYPE_ATTACK    0x03u
-#define PROTO_TYPE_GAMEOVER  0x04u
-#define PROTO_TYPE_SKIP_WAIT 0x05u
+# define PROTO_TYPE_JOIN 0x01u
+# define PROTO_TYPE_STATE 0x02u
+# define PROTO_TYPE_ATTACK 0x03u
+# define PROTO_TYPE_GAMEOVER 0x04u
+# define PROTO_TYPE_SKIP_WAIT 0x05u
 
-#define PROTO_OK          0
-#define PROTO_ERR_ARG   (-1)
-#define PROTO_ERR_TX    (-2)
+# define PROTO_OK 0
+# define PROTO_ERR_ARG (-1)
+# define PROTO_ERR_TX (-2)
 
-typedef struct {
-  uint8_t  player;
-  uint8_t  board[100];
-  uint8_t  next;
-  uint8_t  hold;
-  uint32_t score;
-  uint16_t lines;
-  uint8_t  level;
-  uint8_t  garbage_wait;
-} protocols_state_t;
+	typedef struct
+	{
+		uint8_t		player;
+		uint8_t		board[100];
+		uint8_t		next;
+		uint8_t		hold;
+		uint32_t	score;
+		uint16_t	lines;
+		uint8_t		level;
+		uint8_t		garbage_wait;
+	} protocols_state_t;
 
-uint8_t protocols_crc8(const uint8_t *data, uint32_t len);
-void protocols_pack_board(const uint8_t cells[200], uint8_t board[100]);
-int protocols_hub_send(uint8_t type, const uint8_t *payload, uint8_t len);
-int protocols_send_join(uint8_t player, uint8_t card_type,
-                        const char name[16], uint32_t points);
-int protocols_send_state(const protocols_state_t *state);
-int protocols_send_attack(uint8_t rows);
-int protocols_send_gameover(void);
-int protocols_send_skip_wait(void);
+	uint8_t protocols_crc8(const uint8_t *data, uint32_t len);
+	void protocols_pack_board(const uint8_t cells[200], uint8_t board[100]);
+	int protocols_hub_send(uint8_t type, const uint8_t *payload, uint8_t len);
+	int protocols_send_join(uint8_t player, uint8_t card_type,
+		const char name[16], uint32_t points);
+	int protocols_send_state(const protocols_state_t *state);
+	int protocols_send_attack(uint8_t rows);
+	int protocols_send_gameover(void);
+	int protocols_send_skip_wait(void);
 
-#ifdef __cplusplus
+	void test_protocols(void);
+
+# ifdef __cplusplus
 }
-#endif
+# endif
 
 #endif /* __PROTOCOLS_H__ */
