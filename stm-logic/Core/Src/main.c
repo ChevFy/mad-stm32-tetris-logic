@@ -24,7 +24,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "utils.h"       /* utils/ */
+#include "protocols.h"   /* protocols/ */
+#include "gameplay.h"    /* gameplay/ */
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,6 +114,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    USART3_Test_SendHello();
+    HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
