@@ -104,7 +104,7 @@ int	main(void)
 	MX_USART3_UART_Init();
 	MX_USART6_UART_Init();
 	/* USER CODE BEGIN 2 */
-
+	gameplay_init();
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -114,7 +114,8 @@ int	main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		test_protocols();
+		gameplay_update();
+		HAL_Delay(10);
 	}
 	/* USER CODE END 3 */
 }
