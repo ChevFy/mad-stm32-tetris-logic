@@ -1,0 +1,11 @@
+../Drivers/CMSIS/Include/core_cm7.h:2229:22:SCB_EnableICache	4	static,ignoring_inline_asm
+../Core/Src/main.c:75:9:calculate_crc8	24	static
+../Core/Src/main.c:87:6:send_join_packet	48	static
+../Core/Src/main.c:102:6:send_skip_wait_packet	16	static
+../Core/Src/main.c:113:6:send_gameover_packet	16	static
+../Core/Src/main.c:123:6:compress_board	32	static
+../Core/Src/main.c:135:6:send_state_packet	128	static
+../Core/Src/main.c:173:5:main	24	static
+../Core/Src/main.c:322:6:SystemClock_Config	88	static
+../Core/Src/main.c:369:6:MPU_Config	24	static
+../Core/Src/main.c:392:6:Error_Handler	4	static,ignoring_inline_asm
