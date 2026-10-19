@@ -20,15 +20,17 @@ Only the pins listed here are configured; everything else is at reset default.
 
 ## GPIO inputs
 
-| Pin  | Mode        | Pull    | Likely use |
+| Pin  | Mode        | Runtime pull | Use |
 |------|-------------|---------|------------|
-| PE9  | GPIO_INPUT  | NOPULL  | button / input |
-| PE11 | GPIO_INPUT  | NOPULL  | button / input |
-| PF13 | GPIO_INPUT  | NOPULL  | button / input |
-| PF14 | GPIO_INPUT  | NOPULL  | button / input |
+| PE9  | GPIO_INPUT  | PULLUP | Right, active-low |
+| PE11 | GPIO_INPUT  | PULLUP | Rotate left, active-low |
+| PF13 | GPIO_INPUT  | PULLUP | Left, active-low |
+| PF14 | GPIO_INPUT  | PULLUP | Hold / skip lobby wait, active-low |
+| PC13 | GPIO_INPUT  | PULLDOWN | Blue USER button: join/start, active-high |
 
-- No pull resistor configured — the external circuit must drive these, or add a
-  pull in the `.ioc` before relying on a resting level.
+- `buttons_init()` applies the runtime pull configuration. Connect each external
+  control button between its pin and GND. All buttons use polling and software
+  debounce; no GPIO interrupts or DMA are required.
 
 ## Clock / debug / system
 

@@ -100,5 +100,5 @@ protocols_send_gameover();
 > Only sending is implemented. Receiving (START / ATTACK / RESULT from the Hub)
 > is not in `protocols/` yet.
 >
-> For a runnable example see `test_protocols()` in `protocols/protocols_test.c`
-> (test only — not part of the game).
+> The single-player game in `gameplay/gameplay.c` streams the engine's board,
+> active piece, preview, hold slot, and statistics through these helpers.

@@ -43,8 +43,6 @@ extern "C"
 	int protocols_send_gameover(void);
 	int protocols_send_skip_wait(void);
 
-	void test_protocols(void);
-
 # ifdef __cplusplus
 }
 # endif

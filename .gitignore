@@ -1,0 +1,4 @@
+# Generated STM32CubeIDE build output and local debug launch configuration.
+/stm-logic/Debug/
+/stm-logic/Release/
+/stm-logic/* Debug.launch
