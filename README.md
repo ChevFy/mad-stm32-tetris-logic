@@ -50,6 +50,23 @@ source lists. The Hub link uses USART3 on PD8/PD9 at **921600 8N1**, available
 through ST-LINK's Virtual COM Port. See [pinout](docs/PINOUT.md) and
 [protocol helpers](docs/PROTOCOLS.md).
 
+### Testing from a fresh checkout
+
+1. Check out `feat/game-engine` and import `stm-logic/` using CubeIDE's
+   **Existing Projects into Workspace** import. Use the committed `.project` and
+   `.cproject`; generated `Debug/` files are not needed.
+2. Refresh, Clean, and Build the project, then flash with ST-LINK. Create a local
+   debug launch configuration when prompted. CubeMX regeneration is optional;
+   the generated firmware, HAL/CMSIS files, and linker scripts are included.
+3. In the companion `mad-tetris-python-uart-simulation/tools` directory, install
+   `requirements.txt` into a Python 3.12 environment and run
+   `python hub_sim.py --port COM3` (replace `COM3` with the board's serial port).
+4. Press the blue USER button to join. Wait for solo start, or press PF14 after
+   at least 0.5 seconds to skip waiting. Allow the PC countdown to finish.
+5. Check left/right, rotation, one-use hold, automatic locking, line clears,
+   score/level progression, and game over. The simulator's `D` key shows packet
+   statistics; confirm that STATE packets arrive and CRC errors remain zero.
+
 ## Desktop engine checks
 
 The engine has no HAL dependencies. From the repository root with GCC installed:
