@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Timing (ms) */
 #define WAIT_TIMEOUT_MS 10000u /* automatically start solo after lobby wait */
@@ -92,25 +93,32 @@ static void	pay_parse_line(void)
 
 	if (strncmp(g_pay.line, "PAY OK", 6) == 0)
 	{
-		/* "PAY OK <balance> <name...>"  (name empty for a guest) */
+		/* "PAY OK <balance> <spent> <name...>"  (name empty for a guest) */
+		int32_t	spent;
+
 		g_pay.balance = (int32_t)strtol(g_pay.line + 6, &end, 10);
+		spent = (int32_t)strtol(end, &end, 10);
 		while (*end == ' ')
 			end++;
 		strncpy(g_pay.name, end, 16);
 		g_pay.name[16] = '\0';
 		g_pay.credits = 1;
-		protocols_send_credit(PROTO_CREDIT_OK, g_pay.balance);
+		protocols_send_credit(PROTO_CREDIT_OK, g_pay.balance, spent);
 	}
 	else if (strncmp(g_pay.line, "PAY NOCARD", 10) == 0)
 	{
 		g_pay.name[0] = '\0';
-		protocols_send_credit(PROTO_CREDIT_NO_CARD, 0);
+		protocols_send_credit(PROTO_CREDIT_NO_CARD, 0, 0);
 	}
 	else if (strncmp(g_pay.line, "PAY DENY", 8) == 0)
 	{
 		g_pay.name[0] = '\0';
 		g_pay.balance = (int32_t)atol(g_pay.line + 8);
-		protocols_send_credit(PROTO_CREDIT_DENIED, g_pay.balance);
+		protocols_send_credit(PROTO_CREDIT_DENIED, g_pay.balance, 0);
+	}
+	else if (strncmp(g_pay.line, "NEWREC ", 7) == 0)
+	{
+		protocols_send_newrecord((uint32_t)strtoul(g_pay.line + 7, NULL, 10));
 	}
 	else if (strncmp(g_pay.line, "LB ", 3) == 0)
 	{
@@ -124,6 +132,15 @@ static void	pay_parse_line(void)
 		protocols_send_leaderboard((uint8_t)rank, (uint8_t)count,
 			(uint32_t)points, p);
 	}
+}
+
+/* Tell the ESP32 the final score so it can save it (member cards only). */
+static void	pay_report_score(uint32_t points)
+{
+	char	buf[24];
+	int		n = snprintf(buf, sizeof(buf), "SCORE %lu\n", (unsigned long)points);
+
+	HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)n, 100);
 }
 
 static void	pay_poll(void)
@@ -236,6 +253,7 @@ static void	on_play(void)
 	{
 		send_board(); /* Publish the final settled board/stats before GAMEOVER. */
 		protocols_send_gameover();
+		pay_report_score(t->score);   /* ESP32 saves it if the card is a member */
 		change_state(GAME_RESULT);
 		return ;
 	}

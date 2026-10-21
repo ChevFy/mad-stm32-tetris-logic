@@ -117,13 +117,22 @@ int	protocols_send_skip_wait(void)
 	return (protocols_hub_send(PROTO_TYPE_SKIP_WAIT, NULL, 0));
 }
 
-int	protocols_send_credit(uint8_t status, int32_t balance)
+int	protocols_send_credit(uint8_t status, int32_t balance, int32_t spent)
 {
-	uint8_t	payload[5];
+	uint8_t	payload[9];
 
 	payload[0] = status;
 	put_u32(&payload[1], (uint32_t)balance);
+	put_u32(&payload[5], (uint32_t)spent);
 	return (protocols_hub_send(PROTO_TYPE_CREDIT, payload, sizeof(payload)));
+}
+
+int	protocols_send_newrecord(uint32_t points)
+{
+	uint8_t	payload[4];
+
+	put_u32(payload, points);
+	return (protocols_hub_send(PROTO_TYPE_NEWRECORD, payload, sizeof(payload)));
 }
 
 int	protocols_send_leaderboard(uint8_t rank, uint8_t count,

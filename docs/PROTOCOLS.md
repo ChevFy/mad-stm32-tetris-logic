@@ -85,6 +85,13 @@ the Logic board as `LB <rank> <count> <points> <name>`; the Logic board relays
 each as a LEADERBOARD packet. The Hub caches them and shows the table on the
 game-over (RESULT) screen.
 
+### Score save (member only)
+On game over the Logic board sends `SCORE <points>` back to the ESP32 over the
+**reverse** USART2 line (STM32 PD5 TX -> ESP32 GPIO16 RX). The ESP32 remembers
+the card that paid for the current game; if it was a **member** it publishes
+`/add_score {card_id, points}` to the backend (guests are ignored — no points
+column). This is the only place the ESP32->Logic link is bidirectional.
+
 > The Hub only *displays* credit — the play/no-play gate is enforced here on the
 > Logic board (hold back JOIN until a card with enough balance is tapped).
 
