@@ -61,7 +61,7 @@ int	protocols_hub_send(uint8_t type, const uint8_t *payload, uint8_t len)
 	}
 	buf[3 + len] = protocols_crc8(&buf[1], (uint32_t)len + 2);
 	total = (uint16_t)(4 + len);
-	if (HAL_UART_Transmit(&huart3, buf, total, HAL_MAX_DELAY) != HAL_OK)
+	if (HAL_UART_Transmit(&huart6, buf, total, HAL_MAX_DELAY) != HAL_OK)
 	{
 		return (PROTO_ERR_TX);
 	}
