@@ -26,6 +26,7 @@ extern "C"
 		BTN_HOLD,            /* PF14: hold in game; skip wait in lobby */
 		BTN_RIGHT,           /* PE9: move right */
 		BTN_ROTATE_LEFT,     /* PE11: rotate left */
+		BTN_SOFT_DROP,       /* PF12: hold to drop faster */
 		BTN_START,           /* PC13: Nucleo USER button */
 		BTN_COUNT
 	}	button_id_t;

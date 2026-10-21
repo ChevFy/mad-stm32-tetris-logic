@@ -24,6 +24,7 @@ Only the pins listed here are configured; everything else is at reset default.
 |------|-------------|---------|------------|
 | PE9  | GPIO_INPUT  | PULLUP | Right, active-low |
 | PE11 | GPIO_INPUT  | PULLUP | Rotate left, active-low |
+| PF12 | GPIO_INPUT  | PULLUP | Soft drop (hold = fall faster), active-low |
 | PF13 | GPIO_INPUT  | PULLUP | Left, active-low |
 | PF14 | GPIO_INPUT  | PULLUP | Hold / skip lobby wait, active-low |
 | PC13 | GPIO_INPUT  | PULLDOWN | Blue USER button: join/start, active-high |

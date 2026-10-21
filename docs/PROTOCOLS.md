@@ -57,6 +57,37 @@ protocols_send_gameover();  // empty payload, send once
 protocols_send_skip_wait(); // send once, >=0.5 s after first JOIN
 ```
 
+### CREDIT — relay RFID/pay result to the Hub display
+```c
+protocols_send_credit(PROTO_CREDIT_OK, balance);      // paid, balance left
+protocols_send_credit(PROTO_CREDIT_DENIED, balance);  // not enough -> red overlay
+protocols_send_credit(PROTO_CREDIT_NO_CARD, 0);       // card not in DB -> red overlay
+```
+Payload = `status(1) | balance int32 LE(4)`, 5 bytes. The Logic board calls this
+after the ESP32 reports back from the backend:
+- `PROTO_CREDIT_OK` → Hub shows the credit figure; Logic then allows JOIN/play.
+- `PROTO_CREDIT_DENIED` → Hub flashes red "NOT ENOUGH CREDIT" (~3 s); no JOIN.
+- `PROTO_CREDIT_NO_CARD` → Hub flashes red "UNKNOWN CARD" (~3 s); no JOIN.
+
+ESP32 order per tap: `/check_role` (card in DB? role?) → member: `/retieve_member`
+(username+balance) → `/pay`. The Logic board receives one ASCII line on USART2:
+`PAY OK <bal> <name>` / `PAY DENY <bal>` / `PAY NOCARD`. `<name>` is the member
+username (empty for guests) and is forwarded in the JOIN packet so the Hub shows
+it in the lobby.
+
+### LEADERBOARD — one score row to the Hub
+```c
+protocols_send_leaderboard(rank, count, points, name);  // rank 0-based
+```
+Payload = `rank(1) | count(1) | points u32 LE(4) | name[16]`, 22 bytes. After a
+successful pay the ESP32 fetches `/retieve_leaderboard` and streams each row to
+the Logic board as `LB <rank> <count> <points> <name>`; the Logic board relays
+each as a LEADERBOARD packet. The Hub caches them and shows the table on the
+game-over (RESULT) screen.
+
+> The Hub only *displays* credit — the play/no-play gate is enforced here on the
+> Logic board (hold back JOIN until a card with enough balance is tapped).
+
 ## Helpers
 
 ### protocols_pack_board
