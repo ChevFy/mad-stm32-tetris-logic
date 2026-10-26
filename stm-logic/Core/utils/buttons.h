@@ -28,6 +28,11 @@ extern "C"
 		BTN_ROTATE_LEFT,     /* PE11: rotate left */
 		BTN_SOFT_DROP,       /* PF12: hold to drop faster */
 		BTN_START,           /* PC13: Nucleo USER button */
+		BTN2_LEFT,           /* PE10: player 2 move left */
+		BTN2_RIGHT,          /* PE12: player 2 move right */
+		BTN2_ROTATE_LEFT,    /* PE13: player 2 rotate left */
+		BTN2_HOLD,           /* PE14: player 2 hold */
+		BTN2_SOFT_DROP,      /* PE15: player 2 soft drop */
 		BTN_COUNT
 	}	button_id_t;
 

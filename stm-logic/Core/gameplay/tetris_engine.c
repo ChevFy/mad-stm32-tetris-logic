@@ -90,6 +90,35 @@ void scoring(tetris_game_t *game, int line_cleared) {
 	game->lines += line_cleared;
 	game->level = (game->lines / 10) + 1;
 }
+/* Inject game->pending_garbage rows at the bottom: shift settled blocks up,
+ * fill each new bottom row solid except one random hole. */
+static void apply_garbage(tetris_game_t *game) {
+	uint8_t n = game->pending_garbage;
+	if (n == 0) return;
+	game->pending_garbage = 0;
+	if (n > TETRIS_ROWS) n = TETRIS_ROWS;
+
+	/* blocks that would be pushed above the top -> topped out */
+	for (int r = 0; r < n; r++)
+		for (int c = 0; c < TETRIS_COLS; c++)
+			if (game->board[r][c]) { game->game_over = true; }
+
+	for (int r = 0; r < TETRIS_ROWS - n; r++)
+		memcpy(game->board[r], game->board[r + n], TETRIS_COLS);
+	uint8_t hole = (uint8_t)(tetris_rng_next(game) % TETRIS_COLS);  /* same gap */
+	for (int k = 0; k < n; k++) {
+		int r = TETRIS_ROWS - n + k;
+		for (int c = 0; c < TETRIS_COLS; c++)
+			game->board[r][c] = (c == hole) ? TETRIS_EMPTY : TETRIS_GARBAGE;
+	}
+}
+
+void tetris_queue_garbage(tetris_game_t *game, uint8_t rows) {
+	if (game == NULL || rows == 0) return;
+	uint16_t q = (uint16_t)game->pending_garbage + rows;
+	game->pending_garbage = (q > TETRIS_ROWS) ? TETRIS_ROWS : (uint8_t)q;
+}
+
 void lock_piece(tetris_game_t *game) {
 	for (int i = 0; i < 4; i++) {
 		cell_t c = piece_cell(game->active_piece, game->rotation, i);
@@ -98,6 +127,8 @@ void lock_piece(tetris_game_t *game) {
 	}
 	int cleared = clear_lines(game);
 	scoring(game, cleared);
+	if (cleared == 0)           /* garbage only lands when you don't clear */
+		apply_garbage(game);
 	spawn_from_queue(game);
 	game->hold_used = false;
 }

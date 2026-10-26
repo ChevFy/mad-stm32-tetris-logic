@@ -38,7 +38,11 @@ typedef struct
 	uint16_t lines;
 	uint8_t level; /* Starts at 1; increases every 10 lines */
 	uint32_t rng_state;
+	uint8_t pending_garbage; /* rows to inject at the next lock (versus mode) */
 } tetris_game_t;
+
+/* Garbage value stored in the board (distinct from pieces 1..7). */
+#define TETRIS_GARBAGE 8
 
 /* Initialize all fields, then draw an active piece and one next piece.
  * For repeatable debugging, the same seed must produce the same sequence.
@@ -61,6 +65,9 @@ void tetris_hold(tetris_game_t *game);
  * The caller controls elapsed time; this function must not wait or read a clock.
  */
 void tetris_gravity_step(tetris_game_t *game);
+
+/* Queue garbage rows to be injected from the bottom at the next piece lock. */
+void tetris_queue_garbage(tetris_game_t *game, uint8_t rows);
 
 /* Pure query: candidate placement must not alter the game.
  * Check occupied shape cells, not the whole bounding box.

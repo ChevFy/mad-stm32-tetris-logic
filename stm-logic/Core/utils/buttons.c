@@ -16,6 +16,11 @@ static const button_pin_t	g_pins[BTN_COUNT] = {
 	[BTN_ROTATE_LEFT] = {GPIOE, GPIO_PIN_11, true},
 	[BTN_SOFT_DROP] = {GPIOF, GPIO_PIN_12, true},
 	[BTN_START] = {GPIOC, GPIO_PIN_13, false},
+	[BTN2_LEFT] = {GPIOE, GPIO_PIN_10, true},
+	[BTN2_RIGHT] = {GPIOE, GPIO_PIN_12, true},
+	[BTN2_ROTATE_LEFT] = {GPIOE, GPIO_PIN_13, true},
+	[BTN2_HOLD] = {GPIOE, GPIO_PIN_14, true},
+	[BTN2_SOFT_DROP] = {GPIOE, GPIO_PIN_15, true},
 };
 
 static bool		g_held[BTN_COUNT];
