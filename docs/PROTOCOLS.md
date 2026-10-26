@@ -59,12 +59,12 @@ protocols_send_skip_wait(); // send once, >=0.5 s after first JOIN
 
 ### CREDIT — relay RFID/pay result to the Hub display
 ```c
-protocols_send_credit(PROTO_CREDIT_OK, balance);      // paid, balance left
-protocols_send_credit(PROTO_CREDIT_DENIED, balance);  // not enough -> red overlay
-protocols_send_credit(PROTO_CREDIT_NO_CARD, 0);       // card not in DB -> red overlay
+protocols_send_credit(PROTO_CREDIT_OK, balance, spent);   // paid, balance left + amount spent
+protocols_send_credit(PROTO_CREDIT_DENIED, balance, 0);   // not enough -> red overlay
+protocols_send_credit(PROTO_CREDIT_NO_CARD, 0, 0);        // card not in DB -> red overlay
 ```
-Payload = `status(1) | balance int32 LE(4)`, 5 bytes. The Logic board calls this
-after the ESP32 reports back from the backend:
+Payload = `status(1) | balance int32 LE(4) | spent int32 LE(4)`, 9 bytes. The
+Logic board calls this after the ESP32 reports back from the backend:
 - `PROTO_CREDIT_OK` → Hub shows the credit figure; Logic then allows JOIN/play.
 - `PROTO_CREDIT_DENIED` → Hub flashes red "NOT ENOUGH CREDIT" (~3 s); no JOIN.
 - `PROTO_CREDIT_NO_CARD` → Hub flashes red "UNKNOWN CARD" (~3 s); no JOIN.
@@ -84,6 +84,14 @@ successful pay the ESP32 fetches `/retieve_leaderboard` and streams each row to
 the Logic board as `LB <rank> <count> <points> <name>`; the Logic board relays
 each as a LEADERBOARD packet. The Hub caches them and shows the table on the
 game-over (RESULT) screen.
+
+### NEWRECORD — member beat their high score
+```c
+protocols_send_newrecord(points);   // send once on game over when a new PB is set
+```
+Payload = `points u32 LE(4)`, 4 bytes. Sent on game over when a member's score
+beats their stored high score; the Hub shows a "NEW RECORD" banner on the RESULT
+screen.
 
 ### Score save (member only)
 On game over the Logic board sends `SCORE <points>` back to the ESP32 over the
@@ -138,5 +146,6 @@ protocols_send_gameover();
 > Only sending is implemented. Receiving (START / ATTACK / RESULT from the Hub)
 > is not in `protocols/` yet.
 >
-> The single-player game in `gameplay/gameplay.c` streams the engine's board,
-> active piece, preview, hold slot, and statistics through these helpers.
+> The two-player game in `gameplay/gameplay.c` streams each player's board,
+> active piece, preview, hold slot, and statistics through these helpers (one
+> STATE stream per player, selected by `st.player`).
