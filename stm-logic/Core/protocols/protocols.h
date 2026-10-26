@@ -16,6 +16,13 @@ extern "C"
 # define PROTO_TYPE_ATTACK 0x03u
 # define PROTO_TYPE_GAMEOVER 0x04u
 # define PROTO_TYPE_SKIP_WAIT 0x05u
+# define PROTO_TYPE_CREDIT 0x06u   /* RFID/pay status relayed to the Hub */
+# define PROTO_TYPE_LEADERBOARD 0x07u  /* one leaderboard row relayed to Hub */
+# define PROTO_TYPE_NEWRECORD 0x08u    /* member beat their high score */
+
+# define PROTO_CREDIT_DENIED 0u    /* tap rejected: not enough balance */
+# define PROTO_CREDIT_OK 1u        /* paid: balance sufficient */
+# define PROTO_CREDIT_NO_CARD 2u   /* card not found in the database */
 
 # define PROTO_OK 0
 # define PROTO_ERR_ARG (-1)
@@ -42,8 +49,10 @@ extern "C"
 	int protocols_send_attack(uint8_t rows);
 	int protocols_send_gameover(void);
 	int protocols_send_skip_wait(void);
-
-	void test_protocols(void);
+	int protocols_send_credit(uint8_t status, int32_t balance, int32_t spent);
+	int protocols_send_leaderboard(uint8_t rank, uint8_t count,
+		uint32_t points, const char *name);
+	int protocols_send_newrecord(uint32_t points);
 
 # ifdef __cplusplus
 }

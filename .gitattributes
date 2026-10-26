@@ -1,0 +1,7 @@
+# Keep firmware and documentation diffs stable across Windows and Linux.
+*.c text eol=lf
+*.h text eol=lf
+*.md text eol=lf
+*.ioc text eol=lf
+.cproject text eol=lf
+.mxproject text eol=lf

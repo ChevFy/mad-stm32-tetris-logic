@@ -1,12 +1,12 @@
 /**
  ******************************************************************************
  * @file    buttons.h
- * @brief   4 push buttons (active-low, internal pull-up) with edge detection.
+ * @brief   Tetris controls and start button with polling/debounce.
  *
  *  Usage:
  *    buttons_init();               // once, after MX_GPIO_Init()
  *    buttons_update();             // once per loop
- *    if (buttons_pressed(BTN_JOIN)) // true only on the loop it was pressed
+ *    if (buttons_pressed(BTN_START)) // true only on the loop it was pressed
  ******************************************************************************
  */
 #ifndef __BUTTONS_H__
@@ -22,10 +22,17 @@ extern "C"
 
 	typedef enum
 	{
-		BTN_JOIN = 0, /* PF13 red   : join / add player 2 */
-		BTN_SKIP,     /* PF14 green : skip waiting for player 2 */
-		BTN_3,        /* PE9        : (test) end game */
-		BTN_4,        /* PE11       : (test) end game */
+		BTN_LEFT = 0,       /* PF13: move left */
+		BTN_HOLD,            /* PF14: hold in game; skip wait in lobby */
+		BTN_RIGHT,           /* PE9: move right */
+		BTN_ROTATE_LEFT,     /* PE11: rotate left */
+		BTN_SOFT_DROP,       /* PF12: hold to drop faster */
+		BTN_START,           /* PC13: Nucleo USER button */
+		BTN2_LEFT,           /* PE10: player 2 move left */
+		BTN2_RIGHT,          /* PE12: player 2 move right */
+		BTN2_ROTATE_LEFT,    /* PE13: player 2 rotate left */
+		BTN2_HOLD,           /* PE14: player 2 hold */
+		BTN2_SOFT_DROP,      /* PE15: player 2 soft drop */
 		BTN_COUNT
 	}	button_id_t;
 

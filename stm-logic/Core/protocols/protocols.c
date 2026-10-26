@@ -61,7 +61,7 @@ int	protocols_hub_send(uint8_t type, const uint8_t *payload, uint8_t len)
 	}
 	buf[3 + len] = protocols_crc8(&buf[1], (uint32_t)len + 2);
 	total = (uint16_t)(4 + len);
-	if (HAL_UART_Transmit(&huart3, buf, total, HAL_MAX_DELAY) != HAL_OK)
+	if (HAL_UART_Transmit(&huart6, buf, total, HAL_MAX_DELAY) != HAL_OK)
 	{
 		return (PROTO_ERR_TX);
 	}
@@ -115,4 +115,36 @@ int	protocols_send_gameover(void)
 int	protocols_send_skip_wait(void)
 {
 	return (protocols_hub_send(PROTO_TYPE_SKIP_WAIT, NULL, 0));
+}
+
+int	protocols_send_credit(uint8_t status, int32_t balance, int32_t spent)
+{
+	uint8_t	payload[9];
+
+	payload[0] = status;
+	put_u32(&payload[1], (uint32_t)balance);
+	put_u32(&payload[5], (uint32_t)spent);
+	return (protocols_hub_send(PROTO_TYPE_CREDIT, payload, sizeof(payload)));
+}
+
+int	protocols_send_newrecord(uint32_t points)
+{
+	uint8_t	payload[4];
+
+	put_u32(payload, points);
+	return (protocols_hub_send(PROTO_TYPE_NEWRECORD, payload, sizeof(payload)));
+}
+
+int	protocols_send_leaderboard(uint8_t rank, uint8_t count,
+		uint32_t points, const char *name)
+{
+	uint8_t	payload[22];
+
+	payload[0] = rank;
+	payload[1] = count;
+	put_u32(&payload[2], points);
+	memset(&payload[6], 0, 16);
+	if (name != NULL)
+		strncpy((char *)&payload[6], name, 16);
+	return (protocols_hub_send(PROTO_TYPE_LEADERBOARD, payload, sizeof(payload)));
 }

@@ -20,15 +20,29 @@ Only the pins listed here are configured; everything else is at reset default.
 
 ## GPIO inputs
 
-| Pin  | Mode        | Pull    | Likely use |
+| Pin  | Mode        | Runtime pull | Use |
 |------|-------------|---------|------------|
-| PE9  | GPIO_INPUT  | NOPULL  | button / input |
-| PE11 | GPIO_INPUT  | NOPULL  | button / input |
-| PF13 | GPIO_INPUT  | NOPULL  | button / input |
-| PF14 | GPIO_INPUT  | NOPULL  | button / input |
+**Player 1:**
+| PE9  | GPIO_INPUT  | PULLUP | P1 Right, active-low |
+| PE11 | GPIO_INPUT  | PULLUP | P1 Rotate left, active-low |
+| PF12 | GPIO_INPUT  | PULLUP | P1 Soft drop (hold = fall faster), active-low |
+| PF13 | GPIO_INPUT  | PULLUP | P1 Left, active-low |
+| PF14 | GPIO_INPUT  | PULLUP | P1 Hold, active-low |
 
-- No pull resistor configured — the external circuit must drive these, or add a
-  pull in the `.ioc` before relying on a resting level.
+**Player 2:**
+| PE10 | GPIO_INPUT  | PULLUP | P2 Left, active-low |
+| PE12 | GPIO_INPUT  | PULLUP | P2 Right, active-low |
+| PE13 | GPIO_INPUT  | PULLUP | P2 Rotate left, active-low |
+| PE14 | GPIO_INPUT  | PULLUP | P2 Hold, active-low |
+| PE15 | GPIO_INPUT  | PULLUP | P2 Soft drop, active-low |
+
+| PC13 | GPIO_INPUT  | PULLDOWN | Blue USER button (unused in pay flow) |
+
+> เริ่มเกม = **แตะบัตร** (ไม่ใช้ปุ่ม). แตะ 1 → รอ 10 วิ; แตะใบที่ 2 ใน 10 วิ → 2 คน.
+
+- `buttons_init()` applies the runtime pull configuration. Connect each external
+  control button between its pin and GND. All buttons use polling and software
+  debounce; no GPIO interrupts or DMA are required.
 
 ## Clock / debug / system
 
