@@ -304,6 +304,11 @@ static void	step_player(int i, uint32_t now)
 		{
 			int	cleared = (int)(pl->t.lines - before);
 			uint8_t	rows = garbage_for(cleared);
+			/* Cancel incoming garbage before attacking the opponent. */
+			uint8_t	cancelled = (rows < pl->t.pending_garbage)
+				? rows : pl->t.pending_garbage;
+			pl->t.pending_garbage -= cancelled;
+			rows -= cancelled;
 			if (rows)
 				tetris_queue_garbage(&g.p[1 - i].t, rows);  /* attack opponent */
 		}
